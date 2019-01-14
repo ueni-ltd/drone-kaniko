@@ -3,20 +3,7 @@
 set -euo pipefail
 
 export PATH=$PATH:/kaniko/
-
-DOCKER_AUTH=`echo -n "${PLUGIN_USERNAME}:${PLUGIN_PASSWORD}" | base64`
-
-REGISTRY=${PLUGIN_REGISTRY:-https://index.docker.io/v1/}
-
-cat > /kaniko/.docker/config.json <<DOCKERJSON
-{
-    "auths": {
-        "${REGISTRY}": {
-            "auth": "${DOCKER_AUTH}"
-        }
-    }
-}
-DOCKERJSON
+echo '{"credsStore": "ecr-login"}' > /kaniko/.docker/config.json
 
 DOCKERFILE=${PLUGIN_DOCKERFILE:-Dockerfile}
 CONTEXT=${PLUGIN_CONTEXT:-$PWD}
@@ -31,9 +18,9 @@ if [[ -n "${PLUGIN_BUILD_ARGS:-}" ]]; then
 fi
 
 if [[ -n "${PLUGIN_TAGS:-}" ]]; then
-    DESTINATIONS=$(echo "${PLUGIN_TAGS}" | tr ',' '\n' | while read tag; do echo "--destination=${PLUGIN_REPO}:${tag} "; done)
+    DESTINATIONS=$(echo "${PLUGIN_TAGS}" | tr ',' '\n' | while read tag; do echo "--destination=${PLUGIN_IMAGE_NAME}:${tag} "; done)
 else
-    DESTINATIONS="--destination=${PLUGIN_REPO}:latest"
+    DESTINATIONS="--destination=${PLUGIN_IMAGE_NAME}:${DRONE_COMMIT_SHA}"
 fi
 
 /kaniko/executor -v ${LOG} \
