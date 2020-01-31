@@ -4,9 +4,11 @@ set -euo pipefail
 
 export PATH=$PATH:/kaniko/
 
+set -x
 REGISTRY=${PLUGIN_REGISTRY:-index.docker.io}
 PLUGIN_REPO=${PLUGIN_REPO:-${DRONE_REPO_NAME}}
 PLUGIN_TAGS=${PLUGIN_TAGS:-${DRONE_BRANCH}-${DRONE_COMMIT_SHA}}
+set +x
 
 if [ "${PLUGIN_USERNAME:-}" ] || [ "${PLUGIN_PASSWORD:-}" ]; then
     DOCKER_AUTH=`echo -n "${PLUGIN_USERNAME}:${PLUGIN_PASSWORD}" | base64 | tr -d "\n"`
