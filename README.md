@@ -1,3 +1,5 @@
+(note that this doc is obsolete, don't use it. see inside plugin.sh instead.)
+
 # drone-kaniko
 
 A thin shim-wrapper around the official [Google Kaniko](https://cloud.google.com/blog/products/gcp/introducing-kaniko-build-container-images-in-kubernetes-and-google-container-builder-even-without-root-access) Docker image to make it behave like the [Drone Docker plugin](http://plugins.drone.io/drone-plugins/drone-docker/).
