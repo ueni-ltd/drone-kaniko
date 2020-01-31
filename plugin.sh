@@ -6,6 +6,8 @@ export PATH=$PATH:/kaniko/
 
 REGISTRY=${PLUGIN_REGISTRY:-index.docker.io}
 
+PLUGIN_REPO=${PLUGIN_REPO:-${DRONE_REPO_NAME}}
+
 if [ "${PLUGIN_USERNAME:-}" ] || [ "${PLUGIN_PASSWORD:-}" ]; then
     DOCKER_AUTH=`echo -n "${PLUGIN_USERNAME}:${PLUGIN_PASSWORD}" | base64 | tr -d "\n"`
 
