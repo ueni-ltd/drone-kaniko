@@ -4,11 +4,7 @@ set -euo pipefail
 
 export PATH=$PATH:/kaniko/
 
-set -x
 REGISTRY=${PLUGIN_REGISTRY:-index.docker.io}
-PLUGIN_REPO=${PLUGIN_REPO:-${DRONE_REPO_NAME}}
-PLUGIN_TAGS=${PLUGIN_TAGS:-${DRONE_BRANCH}-${DRONE_COMMIT_SHA}}
-set +x
 
 if [ "${PLUGIN_USERNAME:-}" ] || [ "${PLUGIN_PASSWORD:-}" ]; then
     DOCKER_AUTH=`echo -n "${PLUGIN_USERNAME}:${PLUGIN_PASSWORD}" | base64 | tr -d "\n"`
@@ -54,12 +50,38 @@ if [ -n "${PLUGIN_BUILD_ARGS_FROM_ENV:-}" ]; then
     BUILD_ARGS_FROM_ENV=$(echo "${PLUGIN_BUILD_ARGS_FROM_ENV}" | tr ',' '\n' | while read build_arg; do echo "--build-arg ${build_arg}=$(eval "echo \$$build_arg")"; done)
 fi
 
+# auto_tag, if set auto_tag: true, auto generate .tags file
+# support format Major.Minor.Release or start with `v`
+# docker tags: Major, Major.Minor, Major.Minor.Release and latest
+if [[ "${PLUGIN_AUTO_TAG:-}" == "true" ]]; then
+    TAG=$(echo "${DRONE_TAG:-}" |sed 's/^v//g')
+    part=$(echo "${TAG}" |tr '.' '\n' |wc -l)
+    # expect number
+    echo ${TAG} |grep -E "[a-z-]" &>/dev/null && isNum=1 || isNum=0
+
+    if [ ! -n "${TAG:-}" ];then
+        echo "latest" > .tags
+    elif [ ${isNum} -eq 1 -o ${part} -gt 3 ];then
+        echo "${TAG},latest" > .tags
+    else
+        major=$(echo "${TAG}" |awk -F'.' '{print $1}')
+        minor=$(echo "${TAG}" |awk -F'.' '{print $2}')
+        release=$(echo "${TAG}" |awk -F'.' '{print $3}')
+    
+        major=${major:-0}
+        minor=${minor:-0}
+        release=${release:-0}
+    
+        echo "${major},${major}.${minor},${major}.${minor}.${release},latest" > .tags
+    fi  
+fi
+
 if [ -n "${PLUGIN_TAGS:-}" ]; then
     DESTINATIONS=$(echo "${PLUGIN_TAGS}" | tr ',' '\n' | while read tag; do echo "--destination=${REGISTRY}/${PLUGIN_REPO}:${tag} "; done)
 elif [ -f .tags ]; then
     DESTINATIONS=$(cat .tags| tr ',' '\n' | while read tag; do echo "--destination=${REGISTRY}/${PLUGIN_REPO}:${tag} "; done)
 elif [ -n "${PLUGIN_REPO:-}" ]; then
-    DESTINATIONS="--destination=${PLUGIN_REPO}:latest"
+    DESTINATIONS="--destination=${REGISTRY}/${PLUGIN_REPO}:latest"
 else
     DESTINATIONS="--no-push"
     # Cache is not valid with --no-push
