@@ -5,15 +5,8 @@ set -euxo pipefail
 export PLUGIN_REPO=${PLUGIN_REPO:-${DRONE_REPO_NAME}}
 export PLUGIN_TAGS=${PLUGIN_TAGS:-${DRONE_BRANCH}-${DRONE_COMMIT_SHA}}
 
-pwd
-ls -lsa
-rm -rf .git
-ls -lsa
-
 if [ -e ${DRONE_WORKSPACE_BASE}/.git ]; then
-	ls -ld ${DRONE_WORKSPACE_BASE}/.git
-	rm -rf ${DRONE_WORKSPACE_BASE}/.git || true
-	ls -ld ${DRONE_WORKSPACE_BASE}/.git
+	rm -rf ${DRONE_WORKSPACE_BASE}/.git
 fi
 
 set +x
