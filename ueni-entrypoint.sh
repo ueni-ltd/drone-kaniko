@@ -7,7 +7,7 @@ export PLUGIN_TAGS=${PLUGIN_TAGS:-${DRONE_BRANCH}-${DRONE_COMMIT_SHA}}
 
 set +x
 
-if [ -d .git ]; then
+if [ -e .git ]; then
 	rm -rf .git*
 fi
 
