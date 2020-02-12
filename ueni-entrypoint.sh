@@ -16,7 +16,7 @@ if [ "${PLUGIN_DEBUG-}" = "true" ]; then
 	uname -a
 	pwd
 	env
+	/busybox/sh -x /kaniko/plugin.sh
+else
+	/kaniko/plugin.sh
 fi
-
-set -x
-/kaniko/plugin.sh
