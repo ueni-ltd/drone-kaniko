@@ -14,7 +14,7 @@ if [ "${PLUGIN_DEBUG-}" = "true" ]; then
 	echo "Debug mode on"
 	set -x
 	uname -a
-	docker -v
+	/usr/bin/docker -v
 	pwd
 	env
 fi
