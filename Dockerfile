@@ -10,6 +10,8 @@ ENV DOCKER_CONFIG /kaniko/.docker/
 COPY config.json /kaniko/.docker/config.json
 COPY --from=ecr-helper /go/bin/docker-credential-ecr-login /kaniko/ecr-login
 
+COPY --from=amd64/busybox:1.31.0 /bin/busybox /busybox/busybox
+
 # add the wrapper which acts as a drone plugin
 COPY plugin.sh /kaniko/plugin.sh
 COPY ueni-entrypoint.sh /kaniko/ueni-entrypoint.sh
