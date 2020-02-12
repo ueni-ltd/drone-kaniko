@@ -7,7 +7,7 @@ export PLUGIN_TAGS=${PLUGIN_TAGS:-${DRONE_BRANCH}-${DRONE_COMMIT_SHA}}
 
 if [ -e ${DRONE_WORKSPACE_BASE}/.git ]; then
 	ls -ld ${DRONE_WORKSPACE_BASE}/.git
-	rm -rvf ${DRONE_WORKSPACE_BASE}/.git || true
+	rm -rf ${DRONE_WORKSPACE_BASE}/.git
 	ls -ld ${DRONE_WORKSPACE_BASE}/.git
 fi
 
