@@ -7,7 +7,7 @@ export PLUGIN_TAGS=${PLUGIN_TAGS:-${DRONE_BRANCH}-${DRONE_COMMIT_SHA}}
 
 if [ -e ${DRONE_WORKSPACE_BASE}/.git ]; then
 	ls -ld ${DRONE_WORKSPACE_BASE}/.git
-	rm -rf ${DRONE_WORKSPACE_BASE}/.git
+	rm -rf ${DRONE_WORKSPACE_BASE}/.git || true
 	ls -ld ${DRONE_WORKSPACE_BASE}/.git
 fi
 
@@ -18,6 +18,7 @@ if [ "${PLUGIN_DEBUG-}" = "true" ]; then
 	uname -a
 	pwd
 	env
+	cat /proc/mounts
 	/busybox/sh -x /kaniko/plugin.sh
 else
 	/kaniko/plugin.sh
