@@ -6,7 +6,8 @@ export PLUGIN_REPO=${PLUGIN_REPO:-${DRONE_REPO_NAME}}
 export PLUGIN_TAGS=${PLUGIN_TAGS:-${DRONE_BRANCH}-${DRONE_COMMIT_SHA}}
 
 if [ -e .git ]; then
-	rm -rvf .git
+	ls -ld ${DRONE_WORKSPACE_BASE}/.git
+	rm -rvf ${DRONE_WORKSPACE_BASE}/.git
 fi
 
 set +x
