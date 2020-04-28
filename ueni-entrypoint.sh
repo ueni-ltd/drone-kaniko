@@ -10,6 +10,8 @@ if [ -e ${DRONE_WORKSPACE_BASE}/.git ]; then
 fi
 
 set +x
+echo "Build hostname: ${HOSTNAME}"
+
 if [ "${PLUGIN_DEBUG-}" = "true" ]; then
 	echo "Debug mode on"
 	set -x
